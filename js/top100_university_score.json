@@ -1,0 +1,112 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+  "description": "A parallel coordinates plot",
+  "title": "Relationship between different scores",
+  "data": 
+  {"url": "https://raw.githubusercontent.com/zhining-ku/assignment2/main/top100_university_score.csv"},
+  "width": 500,
+  "height": 500,
+  "layer": [
+    {
+      "mark": "rule",
+      "encoding": {
+        "x": {"value": 0},
+        "opacity": {"value": 0},
+        "y": {
+          "field": "citations_per_faculty",
+          "type": "quantitative",
+          "axis": {"grid": false, "title": null}
+        },
+        "detail": {"field": "Institution"}
+      }
+    },
+    {
+      "mark": "rule",
+      "encoding": {
+        "x": {"value": 0},
+        "opacity": {"value": 0},
+        "y": {
+          "field": "academic_reputation",
+          "type": "quantitative",
+          "axis": {
+            "grid": false,
+            "title": null,
+            "orient": "right",
+            "offset": {"expr": "-width / 2"}
+          }
+        },
+        "detail": {"field": "Institution"}
+      }
+    },
+        {
+      "mark": "rule",
+      "encoding": {
+        "x": {"value": 0},
+        "opacity": {"value": 0},
+        "y": {
+          "field": "employer_reputation",
+          "type": "quantitative",
+          "axis": {
+            "grid": false,
+            "title": null,
+            "orient": "right",
+            "offset": {"expr": "-width / 2"}
+          }
+        },
+        "detail": {"field": "Institution"}
+      }
+    },
+    {
+      "mark": "rule",
+      "encoding": {
+        "x": {"value": 0},
+        "opacity": {"value": 0},
+        "y": {
+          "field": "faculty_student",
+          "type": "quantitative",
+          "axis": {"grid": false, "title": null, "orient": "right", "offset": 0}
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "calculate": "['citations_per_faculty', 'academic_reputation', 'employer_reputation','faculty_student', ]",
+          "as": "x"
+        },
+        {
+          "calculate": "[height - scale('layer_0_y', datum.citations_per_faculty), height - scale('layer_1_y', datum.academic_reputation), height - scale('layer_2_y', datum.employer_reputation),height - scale('layer_1_y', datum.faculty_student)]",
+          "as": "y"
+        },
+        {"flatten": ["x", "y"]}
+      ],
+        "selection": {
+        "hover": {
+          "type": "single",
+          "on": "mouseover",
+          "clear": "mouseout",
+          "empty": "none"
+        }
+      },
+
+      "mark": {"type": "line", "point": true, "tooltip": {"content": "data"}},
+      "encoding": {
+        "opacity": {
+          "condition": {"selection": "hover", "value": 1},
+          "value": 0.05
+        },
+        "x": {
+          "field": "x",
+          "sort": null,
+          "type": "ordinal",
+          "scale": {"type": "point", "padding": 0},
+          "axis": {"title": null, "labelAngle": 0, "domain": false}
+        },
+        "y": {"field": "y", "type": "quantitative", "axis": null},
+        "detail": {"field": "Institution"}
+      }
+    }
+  ],
+  "resolve": {"scale": {"y": "independent"}},
+  "config": {"padding": 0, "view": {"stroke": null}}
+}
